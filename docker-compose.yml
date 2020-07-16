@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: CutOfWoodNew
+      TZ: Europe/Moscow
+      PGTZ: Europe/Moscow
+  web:
+    build: .
+    command: /bin/bash -c "cd CutOfWoodNew && python manage.py migrate --run-syncdb && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      TZ: Europe/Moscow
