@@ -1,124 +1,135 @@
-import axios from 'axios'
-import { AUTH_SUCCESS, AUTH_LOGOUT, AUTH_ERROR, REGISTRATION_ERROR } from './actionTypes'
+import axios from 'axios';
+// import axios from '../../axios/myAxios';
 
-export function auth(email, password) {
-    return async dispatch => {
-        const requestData = {
-            email: email,
-            password: password,
-        }
+import {
+    USER_LOADED,
+    USER_LOADING,
+    AUTH_ERROR,
+    LOGIN_SUCCESS,
+    LOGIN_FAIL,
+    LOGOUT_SUCCESS,
+    REGISTER_SUCCESS,
+    REGISTER_FAIL,
+} from './actionTypes';
+import { returnErrors } from './messages';
 
-        let url = "api/auth/login"
+// CHECK TOKEN & LOAD USER
+export const loadUser = () => async (dispatch, getState) => {
+    // User Loading
+    dispatch({ type: USER_LOADING });
 
+    const token = getState().authReducer.token;
+
+    if (token) {
         const options = {
-            method: 'POST',
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + token,
             },
-            data: JSON.stringify(requestData),
-            url: url
+            url: "/api/auth/user"
         };
 
         await axios(options)
             .then(response => {
-                localStorage.setItem('token', response.data.token);
-                dispatch(authSuccess(response.data.user, response.data.token));
+                dispatch({
+                    type: USER_LOADED,
+                    payload: response.data,
+                });
             })
-            .catch(() => {
-                dispatch(authError());
+            .catch(error => {
+                dispatch(returnErrors(error.response.data, error.response.status));
+                dispatch({
+                    type: AUTH_ERROR,
+                });
             })
+
+    } else {
+        dispatch({
+            type: AUTH_ERROR,
+        });
+    }
+};
+
+// LOGIN USER
+export const login = loginData => async dispatch => {
+    const requestData = {
+        email: loginData.email,
+        password: loginData.password,
+    }
+
+    const url = "/api/auth/login"
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(requestData),
+        url: url
     };
-}
 
-export function deleteToken() {
-    return async dispatch => {
-        const token = localStorage.getItem('token')
-        const options = {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Token ' + token,
-            },
-            url: "api/auth/logout"
-        };
+    await axios(options)
+        .then(response => {
+            dispatch({
+                type: LOGIN_SUCCESS,
+                payload: response.data,
+            });
+        })
+        .catch(error => {
+            dispatch(returnErrors(error.response.data, error.response.status));
+            dispatch({
+                type: LOGIN_FAIL,
+            });
+        })
+};
 
-        await axios(options)
-            .then(() => {
-                dispatch(logout())
-            })
+// REGISTER USER
+export const register = (newUser) => async dispatch => {
+    const url = "/api/auth/register"
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(newUser),
+        url: url
     };
-}
+    await axios(options)
+        .then(response => {
+            dispatch({
+                type: REGISTER_SUCCESS,
+                payload: response.data
+            });
+        })
+        .catch(error => {
+            dispatch(returnErrors(error.response.data, error.response.status));
+            dispatch({
+                type: REGISTER_FAIL,
+            });
+        })
+};
 
-export function logout() {
-    localStorage.removeItem('token')
-    return {
-        type: AUTH_LOGOUT
+// LOGOUT USER
+export const logout = () => async (dispatch, getState) => {
+    const url = "/api/auth/logout"
+    const token = getState().authReducer.token;
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Token ' + token,
+        },
+        url: url
     };
-}
 
-export function authSuccess(user, token) {
-    return {
-        type: AUTH_SUCCESS,
-        user,
-        token
-    };
-}
-
-export function authError() {
-    return {
-        type: AUTH_ERROR,
-        errorMessage: "Неправильный логин или пароль"
-    };
-}
-
-export function autoLogin() {
-    return async dispatch => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const options = {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Token ' + token,
-                },
-                url: "api/auth/user"
-            };
-
-            await axios(options)
-                .then((response) => {
-                    dispatch(authSuccess(response.data, token))
-                })
-                .catch(() => {
-                    dispatch(logout())
-                })
-
-        } else {
-            dispatch(logout())
-        }
-
-    };
-}
-
-export function registration(formControls) {
-    return async dispatch => {
-        let url = "api/auth/register"
-
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: JSON.stringify(formControls),
-            url: url
-        };
-        await axios(options)
-            .catch(() => {
-                dispatch(registrationError());
-            })
-    };
-}
-
-export function registrationError() {
-    return {
-        type: REGISTRATION_ERROR,
-        errorMessage: "Ошибка регистрации"
-    };
-}
+    await axios(options)
+      .then(() => {
+        dispatch({
+          type: LOGOUT_SUCCESS,
+        });
+      })
+      .catch((error) => {
+        dispatch(returnErrors(error.response.data, error.response.status));
+      });
+  };

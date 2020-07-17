@@ -2,15 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { createStore, compose, applyMiddleware } from 'redux';
 import { Provider } from "react-redux";
+import { transitions, positions, Provider as AlertProvider } from 'react-alert';
+import AlertTemplate from 'react-alert-template-basic';
 import rootReducer from './store/reducers/rootReducer.js';
 import thunk from 'redux-thunk';
-
-import { persistStore, persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
-import { PersistGate } from 'redux-persist/integration/react'
 
 
 const composeEnhancers =
@@ -20,23 +18,27 @@ const composeEnhancers =
 			// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
 		}) : compose;
 
-const persistConfig = {
-	key: 'root',
-	storage,
+const store = createStore(
+	rootReducer,
+	composeEnhancers(
+		applyMiddleware(thunk)
+	)
+);
+
+const alertOptions = {
+	position: positions.TOP_CENTER,
+	timeout: 5000,
+	offset: '30px',
+	transition: transitions.SCALE
 }
-
-const persistedReducer = persistReducer(persistConfig, rootReducer)
-
-let store = createStore(persistedReducer, composeEnhancers(applyMiddleware(thunk)))
-let persistor = persistStore(store)
 
 ReactDOM.render(
 	<Provider store={store}>
-		<BrowserRouter>
-			<PersistGate loading={null} persistor={persistor}>
+		<AlertProvider template={AlertTemplate} {...alertOptions}>
+			<HashRouter>
 				<App />
-			</PersistGate>
-		</BrowserRouter>
+			</HashRouter>
+		</AlertProvider>
 	</Provider>,
 	document.getElementById('root')
 );

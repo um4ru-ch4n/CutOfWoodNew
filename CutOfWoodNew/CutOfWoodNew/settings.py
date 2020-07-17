@@ -116,8 +116,8 @@ DATABASES = {
         'NAME': 'CutOfWoodNew',
         'USER': 'postgres',
         'PASSWORD': 'admin',
-        # 'HOST': '127.0.0.1',
-        'HOST': 'db',         # for docker-compose
+        'HOST': '127.0.0.1',
+        # 'HOST': 'db',         # for docker-compose
         'PORT': '5432',
     }
 }

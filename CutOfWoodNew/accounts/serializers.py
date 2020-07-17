@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        exclude = ["last_login", "is_admin", "is_active", "is_staff", "is_superuser"]
+        exclude = ["password", "last_login", "is_admin", "is_active", "is_staff", "is_superuser"]
         
 
 # Register Serializer

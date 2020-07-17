@@ -1,56 +1,64 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-import Layout from './hoc/Layout/Layout'
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { autoLogin } from './store/actions/auth'
-// import Home from './components/Home/Home'
-// import Auth from './components/Auth/Auth'
-// import Registration from './components/Registration/Registration'
-// import Logout from './components/Logout/Logout'
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { loadUser } from './store/actions/auth';
+// import Home from './components/Home/Home';
+import Login from './components/Login/Login';
+import Registration from './components/Registration/Registration';
+import Header from './components/Header/Header';
+import Alerts from './hoc/Alerts/Alerts';
 
 class App extends React.Component {
-	async UNSAFE_componentWillMount() {
-		await this.props.autoLogin();
+	async componentDidMount() {
+		await this.props.loadUser();
 	}
+
+	static propTypes = {
+        isAuthenticated: PropTypes.bool,
+        loadUser: PropTypes.func.isRequired
+    };
 
 	render() {
 		let routers = (
 			<Switch>
-				{/* <Route path="/auth" component={Auth} /> */}
-				{/* <Route path="/registration" component={Registration} /> */}
+				<Route path="/login" component={Login} />
+				<Route path="/registration" component={Registration} />
 				{/* <Route exact path="/" component={Home} /> */}
 				<Redirect to={"/"} />
 			</Switch>
 		);
-		
+
 		if (this.props.isAuthenticated) {
 			routers = (
 				<Switch>
-					{/* <Route path="/logout/" component={Logout} /> */}
 					{/* <Route exact path="/" component={Home} /> */}
 					<Redirect to={"/"} />
 				</Switch>
 			);
 		}
-		
+
 		return (
-			<Layout>
+			<Fragment>
+				<Header />
+				<Alerts />
+
 				{routers}
-			</Layout>
+			</Fragment>
 		);
 	}
 }
 
 function mapStateToProps(state) {
 	return {
-		isAuthenticated: !!state.authReducer.token
+		isAuthenticated: state.authReducer.isAuthenticated
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		autoLogin: () => dispatch(autoLogin())
+		loadUser: () => dispatch(loadUser())
 	};
 }
 
