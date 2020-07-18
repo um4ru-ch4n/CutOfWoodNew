@@ -1,6 +1,6 @@
 import { CREATE_MESSAGE, GET_ERRORS } from './actionTypes';
 
-// CREATE MESSAGE
+// Запись сообщения об ошибке/успехе/инфо
 export const createMessage = (text, type="info") => {
 	return {
 		type: CREATE_MESSAGE,
@@ -11,7 +11,7 @@ export const createMessage = (text, type="info") => {
 	};
 };
 
-// RETURN ERRORS
+// Получение списка ошибок с бэкенда и запись его в store
 export const returnErrors = (message, status) => {
 	return {
 		type: GET_ERRORS,

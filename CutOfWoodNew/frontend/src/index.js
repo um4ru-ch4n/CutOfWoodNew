@@ -10,7 +10,7 @@ import AlertTemplate from 'react-alert-template-basic';
 import rootReducer from './store/reducers/rootReducer.js';
 import thunk from 'redux-thunk';
 
-
+// Чтобы работало расширение devtools
 const composeEnhancers =
 	typeof window === 'object' &&
 		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
@@ -18,6 +18,7 @@ const composeEnhancers =
 			// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
 		}) : compose;
 
+// Создание store (хранение всех данных фронтенда)
 const store = createStore(
 	rootReducer,
 	composeEnhancers(
@@ -25,6 +26,7 @@ const store = createStore(
 	)
 );
 
+// Параметры всплывающих уведомлений
 const alertOptions = {
 	position: positions.TOP_CENTER,
 	timeout: 5000,
@@ -33,10 +35,10 @@ const alertOptions = {
 }
 
 ReactDOM.render(
-	<Provider store={store}>
-		<AlertProvider template={AlertTemplate} {...alertOptions}>
-			<HashRouter>
-				<App />
+	<Provider store={store}>		{/* Для работы store */}
+		<AlertProvider template={AlertTemplate} {...alertOptions}>		{/* Для работы всплывающих уведомлений */}
+			<HashRouter>		{/* Для работы роутера (HashRouter для хранения истории, а также исключения обработки роутов роутером с бэкенда) */}
+				<App />		{/* Корневой компонент приложения */}
 			</HashRouter>
 		</AlertProvider>
 	</Provider>,

@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class AccountManager(BaseUserManager):
+    """ Менеджер кастомной модели пользователя """
+
     def create_user(self, username, email, first_name="", last_name="", patronymic="", phone_number="", instagram="", password=None):
         if not email:
             raise ValueError("Users must have an email address")
@@ -37,6 +39,8 @@ class AccountManager(BaseUserManager):
         return user
 
 class Account(AbstractBaseUser):
+    """ Кастомная модель пользователя для регистрации и авторизации """
+    
     # Necessaruy fields
     id = models.AutoField(primary_key=True)
     email = models.EmailField('Email пользователя', max_length=100, unique=True)

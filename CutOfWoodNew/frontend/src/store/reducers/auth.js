@@ -10,12 +10,13 @@ import {
 } from "../actions/actionTypes";
 
 const initialState = {
-    token: localStorage.getItem('token'),
-    isAuthenticated: null,
-    isLoading: false,
-    user: null,
+    token: localStorage.getItem('token'),       // Токен для доступа к закрытым страницам
+    isAuthenticated: null,      // true, если пользователь авторизован, иначе false
+    isLoading: false,       // true, если информация о пользователе загружается, иначе false
+    user: null,     // Информация о пользователе
 }
 
+// Редюсер для авторизации, регистрации пользователя, а также выхода пользователя из аккаунта
 export default function authReducer(state = initialState, action) {
     switch (action.type) {
         case USER_LOADING:

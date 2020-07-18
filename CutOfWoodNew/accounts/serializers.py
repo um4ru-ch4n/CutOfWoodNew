@@ -2,15 +2,17 @@ from rest_framework import serializers
 from .models import Account
 from django.contrib.auth import authenticate
 
-# Account Serializer
 class UserSerializer(serializers.ModelSerializer):
+    """ Сериализатор для пользователя """
+
     class Meta:
         model = Account
         exclude = ["password", "last_login", "is_admin", "is_active", "is_staff", "is_superuser"]
         
 
-# Register Serializer
 class RegisterSerializer(serializers.ModelSerializer):
+    """ Сериализатор для регистрации пользователя """
+
     class Meta:
         model = Account
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'patronymic', 'phone_number', 'instagram', 'password']
@@ -31,8 +33,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-# Login Serializer
 class LoginSerializer(serializers.Serializer):
+    """ Сериализатор для авторизации пользователя """
+
     email = serializers.CharField()
     password = serializers.CharField()
 

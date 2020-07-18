@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import axios from '../../axios/myAxios';
 
 import {
     USER_LOADED,
@@ -13,12 +12,12 @@ import {
 } from './actionTypes';
 import { returnErrors } from './messages';
 
-// CHECK TOKEN & LOAD USER
+// Проверка токена пользователя из store и получение информации о пользователе
 export const loadUser = () => async (dispatch, getState) => {
-    // User Loading
-    dispatch({ type: USER_LOADING });
+    
+    dispatch({ type: USER_LOADING });       // Установка поля isLoading в значение true
 
-    const token = getState().authReducer.token;
+    const token = getState().authReducer.token;     // Получение значения токена из store
 
     if (token) {
         const options = {
@@ -30,14 +29,14 @@ export const loadUser = () => async (dispatch, getState) => {
         };
 
         await axios(options)
-            .then(response => {
+            .then(response => {     // При успешной проверке токена сохраняем информацию о пользователе в store
                 dispatch({
                     type: USER_LOADED,
                     payload: response.data,
                 });
             })
             .catch(error => {
-                dispatch(returnErrors(error.response.data, error.response.status));
+                dispatch(returnErrors(error.response.data, error.response.status));     // При отсутствии токена в базе данных возвращаем сообщение об ошибке
                 dispatch({
                     type: AUTH_ERROR,
                 });
@@ -50,7 +49,7 @@ export const loadUser = () => async (dispatch, getState) => {
     }
 };
 
-// LOGIN USER
+// Авторизация пользователя
 export const login = loginData => async dispatch => {
     const requestData = {
         email: loginData.email,
@@ -83,7 +82,7 @@ export const login = loginData => async dispatch => {
         })
 };
 
-// REGISTER USER
+// Регистрация пользователя
 export const register = (newUser) => async dispatch => {
     const url = "/api/auth/register"
 
@@ -110,7 +109,7 @@ export const register = (newUser) => async dispatch => {
         })
 };
 
-// LOGOUT USER
+// Выход из аккаунта пользователя
 export const logout = () => async (dispatch, getState) => {
     const url = "/api/auth/logout"
     const token = getState().authReducer.token;

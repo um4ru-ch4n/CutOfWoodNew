@@ -5,6 +5,8 @@ from .models import Account
 
 @admin.register(Account)
 class AccountAdmin(admin.ModelAdmin):
+    """ Класс для отображения информации о пользователях в админке """
+
     list_display = ("id", "email", "username")
     list_display_links = ("id", "email")
     fieldsets = (

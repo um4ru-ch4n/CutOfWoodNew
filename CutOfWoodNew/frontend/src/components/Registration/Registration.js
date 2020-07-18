@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import { register } from '../../store/actions/auth';
 import { createMessage } from '../../store/actions/messages';
 
-export class Register extends Component {
+// Компонент для регистрации пользователя
+export class Registration extends Component {
     state = {
         username: '',
         email: '',
@@ -19,10 +20,11 @@ export class Register extends Component {
     };
 
     static propTypes = {
-        register: PropTypes.func.isRequired,
-        isAuthenticated: PropTypes.bool,
+        register: PropTypes.func.isRequired,        // Метод для регистрации пользователя
+        isAuthenticated: PropTypes.bool,            // true, если пользователь авторизован, иначе false
     };
 
+    // Метод при отправке формы регистрации
     onSubmit = (e) => {
         e.preventDefault();
         const {
@@ -37,18 +39,20 @@ export class Register extends Component {
             password2,
         } = this.state;
 
+        // Регулярное выражение для проверки поля с номером телефона
         const phoneNumberRegExp = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/gmi;
+        // Регулярное выражение для проверки поля с инстаграмом
         const instagramRegExp = /^[@]\w*/gmi;
 
-        if (username.length < 3) {
+        if (username.length < 3) {      // Если никнейм слишком короткий
             this.props.createMessage("Никнейм должен состоять как минимум из 3 символов!", "error");
-        } else if (phone_number && !phoneNumberRegExp.test(phone_number)) {
+        } else if (phone_number && !phoneNumberRegExp.test(phone_number)) {     // Если поле номера телефона заполнено не верно
             this.props.createMessage("Неверный формат поля номер телефона!", "error");
-        } else if (instagram && !instagramRegExp.test(instagram)) {
+        } else if (instagram && !instagramRegExp.test(instagram)) {     // Если поле инстаграма заполнено не верно
             this.props.createMessage("Неверный формат поля инстаграм!", "error");
-        } else if (password !== password2) {
+        } else if (password !== password2) {        // Если пароли не совпадают
             this.props.createMessage("Пароли не совпадают!", "error");
-        } else if (password.length < 6) {
+        } else if (password.length < 6) {       // Если пароль слишком короткий
             this.props.createMessage("Пароль должен состоять как минимум из 6 символов!", "error");
         } else {
             const newUser = {
@@ -65,9 +69,12 @@ export class Register extends Component {
         }
     };
 
+    // Метод при изменении состояния поля формы авторизации
     onChange = (e) => this.setState({ [e.target.name]: e.target.value });
 
     render() {
+        // Если пользователь уже авторизован, 
+        // происходит перенаправление на главную страницу
         if (this.props.isAuthenticated) {
             return <Redirect to="/" />;
         }
@@ -86,6 +93,7 @@ export class Register extends Component {
             <div className="col-md-6 m-auto">
                 <div className="card card-body mt-5">
                     <h2 className="text-center">Registration</h2>
+                    {/* Форма регистрации */}
                     <form onSubmit={this.onSubmit}>
                         <div className="form-group">
                             <label>Username</label>
@@ -193,12 +201,12 @@ export class Register extends Component {
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.authReducer.isAuthenticated
+    isAuthenticated: state.authReducer.isAuthenticated      // Импорт поля для проверки авторизован ли пользователь из store
 });
 
 const mapDispatchToProps = dispatch => ({
-    register: (newUser) => dispatch(register(newUser)),
-    createMessage: (text, type) => dispatch(createMessage(text, type))
+    register: (newUser) => dispatch(register(newUser)),     // Импорт метода для регистрации из actions
+    createMessage: (text, type) => dispatch(createMessage(text, type))      // Импорт метода создания всплывающего сообщения из actions
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, mapDispatchToProps)(Registration);

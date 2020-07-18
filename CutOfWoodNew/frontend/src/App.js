@@ -12,15 +12,16 @@ import Alerts from './hoc/Alerts/Alerts';
 
 class App extends React.Component {
 	async componentDidMount() {
-		await this.props.loadUser();
+		await this.props.loadUser();		// Проверка актуальности токена пользователя
 	}
 
 	static propTypes = {
-        isAuthenticated: PropTypes.bool,
-        loadUser: PropTypes.func.isRequired
+        isAuthenticated: PropTypes.bool,		// true, если пользователь авторизован, иначе false
+        loadUser: PropTypes.func.isRequired		// Метод для загрузки информации о пользователе
     };
 
 	render() {
+		// Публичные роуты
 		let routers = (
 			<Switch>
 				<Route path="/login" component={Login} />
@@ -29,7 +30,8 @@ class App extends React.Component {
 				<Redirect to={"/"} />
 			</Switch>
 		);
-
+		
+		// Приватные роуты
 		if (this.props.isAuthenticated) {
 			routers = (
 				<Switch>
@@ -41,10 +43,10 @@ class App extends React.Component {
 
 		return (
 			<Fragment>
-				<Header />
-				<Alerts />
+				<Header />		{/* Шапка сайта */}
+				<Alerts />		{/* Всплывающие уведомления */}
 
-				{routers}
+				{routers}		{/* Все роуты сайта */}
 			</Fragment>
 		);
 	}
@@ -52,13 +54,13 @@ class App extends React.Component {
 
 function mapStateToProps(state) {
 	return {
-		isAuthenticated: state.authReducer.isAuthenticated
+		isAuthenticated: state.authReducer.isAuthenticated		// Импорт поля для проверки авторизован ли пользователь из store
 	};
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		loadUser: () => dispatch(loadUser())
+		loadUser: () => dispatch(loadUser())		// Импорт метода для загрузки информации о пользователе из actions
 	};
 }
 

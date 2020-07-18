@@ -4,15 +4,17 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { logout } from '../../store/actions/auth';
 
+// Шапка сайта
 class Header extends React.Component {
     static propTypes = {
-        logout: PropTypes.func.isRequired,
-        auth: PropTypes.object.isRequired,
+        logout: PropTypes.func.isRequired,      // Метод для выхода из аккаунта
+        auth: PropTypes.object.isRequired,      // Объект со всей информацией о пользователе (хранится в store)
     };
 
     render() {
         const { isAuthenticated, user } = this.props.auth;
 
+        // Контент для авторизованных пользователей
         const authLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
                 <li className="nav-item">
@@ -28,7 +30,8 @@ class Header extends React.Component {
                 </li>
             </ul>
         );
-
+        
+        // Контент для неавторизованных пользователей
         const guestLinks = (
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
                 <li className="nav-item">
@@ -45,6 +48,7 @@ class Header extends React.Component {
         );
 
         return (
+            // Навигационная панель
             <nav className={"navbar navbar-expand-sm navbar-dark bg-dark "}>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
@@ -64,11 +68,11 @@ class Header extends React.Component {
 }
 
 const mapStateToProps = state => ({
-    auth: state.authReducer
+    auth: state.authReducer     // Импорт объекта со всей информацией о пользователе из store
 });
 
 const mapDispatchToProps = dispatch => ({
-    logout: () => dispatch(logout()),
+    logout: () => dispatch(logout()),       // Импорт метода для выхода из аккаунта из actions
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
