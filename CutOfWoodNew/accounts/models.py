@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-
 class AccountManager(BaseUserManager):
     """ Менеджер кастомной модели пользователя """
 
@@ -23,6 +22,7 @@ class AccountManager(BaseUserManager):
 
         user.set_password(password)
         user.save(using=self._db)
+
         return user
 
     def create_superuser(self, email, username, password):

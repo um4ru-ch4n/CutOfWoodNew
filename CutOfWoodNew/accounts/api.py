@@ -4,16 +4,25 @@ from knox.models import AuthToken
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
 from .models import Account
 
+import sys
+sys.path.append('../')
+from products.serializers import CartSerializer
+
 
 class RegisterAPI(generics.GenericAPIView):
     """ API для регистрации нового пользователя """
 
-    serializer_class = RegisterSerializer
-
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data = request.data)
-        serializer.is_valid(raise_exception = True)
-        user = serializer.save()
+        newUser = RegisterSerializer(data = request.data)
+        newUser.is_valid(raise_exception = True)
+
+        user = newUser.save()
+
+        if user:
+            newCart = CartSerializer(data={'user': user.id, 'price': 0})
+            newCart.is_valid(raise_exception = True)
+            newCart.save()
+
         return Response({
             "user": UserSerializer(user, context = self.get_serializer_context()).data,
             "token": AuthToken.objects.create(user)[1]

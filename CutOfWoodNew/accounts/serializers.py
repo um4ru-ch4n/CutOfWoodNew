@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate
 class UserSerializer(serializers.ModelSerializer):
     """ Сериализатор для пользователя """
 
+    cart = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
         model = Account
         exclude = ["password", "last_login", "is_admin", "is_active", "is_staff", "is_superuser"]

@@ -8,6 +8,8 @@ sys.path.append('../')
 
 
 class Category(models.Model):
+    """ Категория товара """
+
     id = models.AutoField(primary_key=True)
     title = models.CharField('Название категории', max_length=255, unique=True)
     description = models.TextField(
@@ -22,6 +24,8 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """ Товар """
+
     id = models.AutoField(primary_key=True)
     title = models.CharField('Название товара', max_length=255)
     description = models.TextField(
@@ -43,6 +47,8 @@ class Product(models.Model):
 
 
 class Photo(models.Model):
+    """ Фото товара """
+
     id = models.AutoField(primary_key=True)
     title = models.CharField('Название фото', max_length=255)
     description = models.TextField(
@@ -52,13 +58,15 @@ class Photo(models.Model):
         Product, verbose_name="Товар", related_name="photos", on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title
+        return self.image.url
 
     class Meta:
         verbose_name = 'Фото товара'
         verbose_name_plural = 'Фото товара'
 
 class Cart(models.Model):
+    """ Корзина авторизованного пользователя """
+
     id = models.AutoField(primary_key=True)
     products = models.ManyToManyField(Product, verbose_name="Товары", related_name="carts", blank=True)
     user = models.OneToOneField(
@@ -75,6 +83,8 @@ class Cart(models.Model):
         verbose_name_plural = 'Корзины'
 
 class OrderStatus(models.Model):
+    """ Статус заказа """
+
     id = models.AutoField(primary_key=True)
     title = models.CharField('Название статуса', max_length=255)
     description = models.TextField('Описание статуса', default="", blank=True, null=True)
@@ -87,6 +97,8 @@ class OrderStatus(models.Model):
         verbose_name_plural = 'Статусы'
 
 class Order(models.Model):
+    """ Заказ """
+
     id = models.AutoField(primary_key=True)
     products = models.ManyToManyField(Product, verbose_name="Товары", related_name="orders", blank=True)
     user = models.ForeignKey(Account, verbose_name="Пользователь", related_name="orders", on_delete=models.CASCADE)
