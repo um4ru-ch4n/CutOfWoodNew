@@ -6,6 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     """ Сериализатор для пользователя """
 
     cart = serializers.PrimaryKeyRelatedField(read_only=True)
+    orders = serializers.SlugRelatedField(slug_field="id", read_only=True, many=True)
 
     class Meta:
         model = Account

@@ -9,11 +9,15 @@ router.register('api/categories', api.CategoryViewSet, basename='category'),
 router.register('api/products', api.ProductViewSet, basename='product'),
 router.register('api/photos', api.PhotoViewSet, basename='photo'),
 router.register('api/carts', api.CartViewSet, basename='cart'),
+router.register('api/orders', api.OrderViewSet, basename='order'),
 
 urlpatterns = [
     path('', include(router.urls)),
     path('api/cart/', api.CartViewSet.as_view({
         'get': 'retrieve', 
         'post': 'update'
+    })),
+    path('api/order/', api.OrderViewSet.as_view({
+        'post': 'create'
     })),
 ]
